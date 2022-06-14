@@ -1,7 +1,7 @@
 #!groovy
 
 class Global {
-    static Object KUBERNETES_TEST = "test-k8s"
+    static Object KUBERNETES = "docker-desktop"
     static Object REGISTRY = "nilveraltd"
     static Object REGISTRY_CREDENTIAL = "dockerhub"
 }
@@ -15,7 +15,7 @@ def Build(APP, DIR, BUILD_ID){
     env.DIR = "${DIR}"
     env.BUILD_ID = "${BUILD_ID}"
 
-     docker.withRegistry("https://registry.hub.docker.com", "${REGISTRY_CREDENTIAL}") {
+     docker.withRegistry("", "${REGISTRY_CREDENTIAL}") {
         def IMG = docker.build("${REGISTRY}/${APP}", "-f ${DIR}/Dockerfile .")
         IMG.push("${BUILD_ID}")
     }
