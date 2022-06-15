@@ -21,28 +21,6 @@ def Build(APP, DIR, BUILD_ID){
     }
 }
 
-def Deploy(APP, DIR, NAMESPACE){
 
-   env.KUBERNETES = Global.KUBERNETES
-   env.REGISTRY_CREDENTIAL = Global.REGISTRY_CREDENTIAL
-
-    env.APP = "${APP}"
-    env.DIR = "${DIR}"
-    env.NAMESPACE = "${NAMESPACE}"
-
-
-    withCredentials([
-        usernamePassword(credentialsId: "${REGISTRY_CREDENTIAL}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD'),
-        file(credentialsId: "${KUBERNETES}", variable: 'KUBECONFIG')
-    ]) {
-        sh 'cat ${KUBECONFIG} > ~/.kube/config'
-        sh 'kubectl -n ${NAMESPACE} create secret docker-registry dockerhub --docker-username=${USERNAME} --docker-password=${PASSWORD} --dry-run=client -o yaml | kubectl apply -f -'
-        sh 'cat ${DIR}/k8s/prod/deployment.yaml | envsubst | kubectl -n ${NAMESPACE} apply -f -'
-        sh 'kubectl -n ${NAMESPACE} apply -f ${DIR}/k8s/prod/service.yaml'
-        sh 'kubectl -n ${NAMESPACE} apply -f ${DIR}/k8s/prod/configmap.yaml ||echo "ignoring non-configmap"'
-        sh 'kubectl -n ${NAMESPACE} rollout status deployment ${APP} --timeout=3m'
-    }
-    
-}
 
 return this
