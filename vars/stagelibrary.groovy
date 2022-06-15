@@ -16,7 +16,7 @@ def Build(APP, DIR, BUILD_ID){
     env.BUILD_ID = "${BUILD_ID}"
 
      docker.withRegistry("https://registry.hub.docker.com", "${REGISTRY_CREDENTIAL}") {
-        def IMG = docker.build("${REGISTRY}/${APP}", "-f ${DIR}/Dockerfile .")
+        def IMG = docker.build("${REGISTRY}/${APP}", "-f /bitnami/jenkins/home/workspace/ArgoCd_master/ArgoCd/Dockerfile .")
         IMG.push("${BUILD_ID}")
     }
 }
